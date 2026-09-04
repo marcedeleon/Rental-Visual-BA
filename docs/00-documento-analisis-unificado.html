@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Rental Visual BA - Análisis</title>
+<style>
+  body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px 60px; line-height: 1.5; color: #1a1a1a; }
+  h1 { font-size: 22px; color: #0b3d66; border-bottom: 2px solid #0b3d66; padding-bottom: 4px; }
+  h2 { font-size: 18px; color: #0b3d66; margin-top: 28px; }
+  h3 { font-size: 15px; color: #11517f; margin-top: 18px; }
+  .encabezado { text-align: center; margin-bottom: 8px; }
+  .encabezado .unl { font-size: 16px; font-weight: bold; }
+  .encabezado .lic { font-size: 13px; }
+  .encabezado .tpi { font-size: 13px; }
+  .titulo-caso { font-size: 20px; font-weight: bold; color: #0b3d66; text-align: center; margin-top: 18px; }
+  p { text-align: justify; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; margin: 12px 0; }
+  th { background: #0b3d66; color: #fff; text-align: left; padding: 6px 8px; }
+  td { border: 1px solid #bbb; padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f2f6fa; }
+  .estado { font-family: Consolas, monospace; background: #eef; padding: 1px 4px; border-radius: 3px; }
+  .centro { text-align: center; }
+  .nota { background: #fff8e1; border-left: 4px solid #f9a825; padding: 8px 12px; margin: 10px 0; }
+  .regla { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 8px 12px; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="encabezado">
+  <div class="unl">Universidad Nacional de Lanús</div>
+  <div class="lic">Licenciatura en Sistemas — Prácticas Pre Profesionales 2026</div>
+  <div class="tpi">Trabajo Práctico Integrador Cuatrimestral</div>
+  <br>
+  <div>Prof. Tit.: Lic. Gustavo Siciliano</div>
+  <div>Inst. Ayud.: Lic. Marcelo Wolf</div>
+  <div>Inst. Ayud.: Santiago Cofman</div>
+  <br>
+  <div><strong>Integrantes:</strong> De León, Marcelo · Ibañez, Sofia · Maldonado, Juan · Rodriguez, Ramiro</div>
+</div>
+
+<div class="titulo-caso">Caso "Rental Visual BA"</div>
+
+<p>El presente documento constituye la primera entrega del proceso de análisis de sistemas correspondiente al caso "Rental Visual BA", una empresa dedicada al alquiler temporario de equipamiento audiovisual de alto valor patrimonial (cámaras, ópticas, sonido, iluminación y generadores) para productoras, agencias de publicidad y realizadores independientes de Zona Norte y Capital Federal. Su objetivo es relevar la problemática operativa actual del cliente, fundamentar técnicamente la necesidad de una solución de software a medida, contrastarla con las alternativas existentes en el mercado y delimitar el alcance inicial del proyecto a desarrollar.</p>
+
+<h2>1. Problema del Cliente</h2>
+<p>La forma de operar sobre un archivo de Excel administrado manualmente en el galpón, sin controles ni validaciones automáticas, resulta primitiva. Del relevamiento inicial —tanto de la comunicación del cliente como del propio archivo de datos provisto ("Caso_4_Audiovisual_Rental_Datos_Equipos.xlsx")— se desprenden fallas operativas críticas que afectan directamente la disponibilidad de stock, la trazabilidad de los equipos y la salud financiera del negocio.</p>
+
+<h3>1.1 Fallas operativas a simple vista</h3>
+<ul>
+  <li><strong>Reservas "de palabra" sin verificación de stock real:</strong> las solicitudes que llegan por WhatsApp se confirman de manera informal, sin consultar la disponibilidad efectiva del equipo para el rango de fechas solicitado. Esto deriva sistemáticamente en dobles reservas: un mismo ítem se compromete a dos clientes distintos en fechas superpuestas. Esta falta de control es crítica para la simple operación de alquiler. Sin esto solucionado, no se podría seguir adelante.</li>
+  <li><strong>Pérdida de trazabilidad en las devoluciones (check-in):</strong> el campo de fecha de devolución real queda en blanco por olvido del personal de recepción o porque el cliente negoció una prórroga verbal por teléfono. En el relevamiento de contratos analizado, <strong>6 de los 10 alquileres registrados no tienen fecha de devolución real cargada</strong> (ALQ-1002, ALQ-1004, ALQ-1005, ALQ-1008, ALQ-1009 y ALQ-1010), lo que impide saber con certeza si el equipo está afuera, ya volvió o fue extraviado.</li>
+  <li><strong>Control técnico subjetivo y no estandarizado:</strong> el estado de los equipos se documenta con frases coloquiales y ambiguas en lugar de una escala de estado predefinida, lo que genera conflictos con clientes al momento de la entrega.</li>
+  <li><strong>Descontrol de señas, cobros, recargos por mora y garantías:</strong> no existe un criterio unificado para registrar depósitos en garantía (pagarés, retención de DNI, seguros de caución, efectivo, "confianza de palabra"), ni para calcular automáticamente los recargos por demora en la devolución. A fin de mes resulta imposible determinar con precisión quién adeuda pagos o días de alquiler.</li>
+  <li><strong>No se tiene una fecha probable de disponibilidad:</strong> cuando un equipo está alquilado, en mora o en servicio técnico, no existe manera de proyectar cuándo volverá a estar realmente disponible para alquilar.</li>
+</ul>
+
+<h3>1.2 Diagnóstico técnico: desnormalización severa del archivo Excel</h3>
+<p>Más allá de los problemas de proceso, el análisis del Excel actual revela un problema estructural de fondo: los datos no siguen ningún esquema normalizado, lo que hace inviable construir sobre ellos reportes de disponibilidad, estado de los ítems a alquilar, validaciones automáticas o un motor de disponibilidad. Este punto resulta central para el diagnóstico, ya que cualquier solución de software que se construya deberá partir, necesariamente, de un proceso de limpieza y normalización de estos datos. La siguiente tabla resume la evidencia relevada directamente sobre las tres hojas del archivo (Equipamiento_Inventario, Productoras_Clientes y Registro_Alquileres):</p>
+
+<table>
+  <tr><th>Campo del sistema actual</th><th>Inconsistencia detectada</th><th>Ejemplos textuales extraídos del Excel</th></tr>
+  <tr><td>Código de ítem (Cod_Item)</td><td>Ausencia de un estándar único de codificación; el mismo equipo aparece con identificadores distintos.</td><td>"EQ-001" / "EQ001" / "003" / "10"</td></tr>
+  <tr><td>Código de ítem (Cod_Item)</td><td>El código "EQ-005" está duplicado para dos equipos distintos ("Bafle Activo RCF 15" y "Bafle RCF 15").</td><td>—</td></tr>
+  <tr><td>Precio de alquiler (Precio_Alquiler_Dia)</td><td>Mezcla de monedas, símbolos y formatos numéricos sin unidad estandarizada.</td><td>"$35.000" / "35000" / "U$S 25.00" / "$ 28.000,00"</td></tr>
+  <tr><td>Estado operativo (Estado_Actual)</td><td>El campo de estado mezcla valores de negocio con comentarios técnicos en texto libre, sin escala definida. <strong>No distingue entre stock/ubicación y operatividad técnica.</strong></td><td>"Cable pelado (revisar)" / "Anda bien pero falta una perilla" / "Disponible con detalle" / "Le falta la tapita de pila"</td></tr>
+  <tr><td>Ubicación en depósito (Ubicacion_Deposito)</td><td>Ubicaciones relativas, descriptivas y no codificadas; no existe un criterio de zonas o estantería.</td><td>"Galpón fondo" / "Pared Grip" / "Rack sonido" / "Estante A1" / "Taller técnico"</td></tr>
+  <tr><td>Identificador de cliente y de contrato</td><td>Directamente no existe. No se sabe a simple vista quién es el Locatario.</td><td>—</td></tr>
+  <tr><td>Fechas de retiro y devolución</td><td>Inexistente y de suma prioridad para el eventual próximo alquiler/interés de algún cliente.</td><td>—</td></tr>
+  <tr><td>Estado de pago y garantías</td><td>Inexistente. No se dispone de ningún registro, trazabilidad ni control sobre los flujos de cobro de los alquileres.</td><td>—</td></tr>
+</table>
+
+<p>Esta situación confirma que el problema del cliente no es únicamente de proceso (falta de un sistema), sino también de calidad de dato: sin identificadores únicos, unidades homogéneas y campos de estado estructurados, ninguna herramienta —por más simple que sea— podría garantizar hoy una respuesta confiable sobre la disponibilidad real de un equipo.</p>
+
+<h2>2. Posible Solución Funcional de Sistemas</h2>
+<p>Se propone el desarrollo de un <strong>Sistema Híbrido de Gestión de Alquileres y Catálogo Web</strong>, concebido como una única plataforma con dos entornos de uso diferenciados pero integrados sobre una misma base de datos normalizada, de modo que la disponibilidad que ve el cliente externo sea siempre la disponibilidad real del depósito.</p>
+
+<h3>2.1 Entorno Cliente (Portal Web — Pre-reservas)</h3>
+<ul>
+  <li>Registro e inicio de sesión para productoras, agencias y clientes freelance.</li>
+  <li>Navegación del catálogo de equipos con disponibilidad de stock verificada en tiempo real por rango de fechas y proyección de disponibilidad probable.</li>
+  <li>Generación de <strong>pre-reservas</strong> autogestionadas y armado de presupuestos.</li>
+  <li>Panel personal con las pre-reservas y alquileres vigentes, fechas de devolución pactadas y estado de cuenta.</li>
+  <li><strong>Regla de negocio:</strong> el portal funciona como <strong>pre-reserva</strong> (estado PRE-RESERVA). El pedido <strong>requiere la autorización del personal</strong> del depósito antes de confirmarse y ejecutarse como alquiler.</li>
+</ul>
+
+<h3>2.2 Entorno Administrador (Backoffice / Mostrador)</h3>
+<ul>
+  <li>Gestión CRUD completa del catálogo de equipamiento (alta, baja, modificación de ítems, precios y estados).</li>
+  <li><strong>Autorización de pre-reservas</strong> del portal web (confirmación/denegación).</li>
+  <li>Visualización centralizada de todos los alquileres vigentes y su estado.</li>
+  <li>Gestión ágil del check-out (retiro) y check-in (devolución), con actualización automática del estado y la disponibilidad.</li>
+  <li><strong>Registro de la revisión técnica</strong> al recibir el equipo (rol del técnico de recepción).</li>
+  <li>Registro de cobros, señas y garantías, con cálculo automático de recargos por mora.</li>
+  <li>Alertas de devoluciones próximas, <strong>vencidas (mora)</strong> y cuentas por cobrar.</li>
+</ul>
+
+<h3>2.3 Estados del equipo (dos ejes independientes)</h3>
+<p>Se corrige el defecto del Excel que mezclaba en un solo campo el "estado". El sistema maneja <strong>dos ejes de estado totalmente independientes</strong>:</p>
+
+<p><strong>Eje 1 — Stock / Ubicación del equipo:</strong></p>
+<ul>
+  <li><span class="estado">EN_STOCK</span> (en depósito, disponible para alquilar)</li>
+  <li><span class="estado">ALQUILADO</span> (afuera, en manos de un cliente)</li>
+  <li><span class="estado">EN_SERVICIO_TECNICO</span> (en el depósito, siendo reparado o revisado)</li>
+  <li><span class="estado">BAJA</span> / <span class="estado">PERDIDO</span></li>
+</ul>
+
+<p><strong>Eje 2 — Operatividad técnica:</strong></p>
+<ul>
+  <li><span class="estado">OPERATIVO</span> (funciona correctamente)</li>
+  <li><span class="estado">OPERATIVO_CON_OBSERVACIONES</span> (anda pero con detalles)</li>
+  <li><span class="estado">EN_REPARACION</span> (no sirve hasta ser revisado/reparado)</li>
+  <li><span class="estado">SIN_REVISAR</span> (aún no inspeccionado)</li>
+</ul>
+
+<div class="nota"><strong>(Requisito clave del cliente):</strong> No es lo mismo estar en stock que funcionar. Un equipo puede estar <span class="estado">EN_STOCK</span> pero <span class="estado">EN_REPARACION</span> (está en el depósito pero con falla), y en ese estado <strong>no debe prestarse</strong>. Un equipo solo se alquila si está en <span class="estado">EN_STOCK</span> <strong>y</strong> <span class="estado">OPERATIVO</span> (o <span class="estado">OPERATIVO_CON_OBSERVACIONES</span> comunicadas al cliente). El técnico que recepciona y revisa el equipo actualiza <strong>ambos</strong> ejes en cada check-in o revisión.</div>
+
+<h3>2.4 Disponibilidad probable y anticipación de la mora</h3>
+<p>Para evitar la ambigüedad de "no sabemos cuándo vuelve", el sistema incorpora:</p>
+<ul>
+  <li><strong>Mora automática:</strong> si la fecha pactada de devolución pasó y el equipo sigue en estado <span class="estado">ALQUILADO</span>, el alquiler se marca automáticamente en <strong>MORA</strong>.</li>
+  <li><strong>Prórroga formal:</strong> cuando el cliente avisa que necesita el equipo unos días más, el personal registra una <strong>prórroga</strong> con nueva fecha estimada de devolución (y recargo si corresponde). Nunca queda de palabra.</li>
+  <li><strong>Ventana de revisión técnica:</strong> cada equipo posee un campo "días de revisión" (configurable, por defecto 1 día) que representa el tiempo que el técnico necesita para inspeccionarlo al volver.</li>
+  <li><strong>Fecha probable de disponibilidad:</strong> el sistema calcula y muestra, para cada equipo, cuándo estará realmente disponible, considerando: fin del alquiler vigente (o prórroga / resolución de la mora) + ventana de revisión técnica + retorno a estado <span class="estado">EN_STOCK</span> y <span class="estado">OPERATIVO</span>. Esta fecha probable queda <strong>siempre a disposición</strong> en la consulta de disponibilidad y en el catálogo.</li>
+  <li><strong>Regla de confirmación de reserva:</strong> una reserva solo se confirma si, tras la proyección de disponibilidad, el equipo quedará <span class="estado">EN_STOCK</span> y <span class="estado">OPERATIVO</span> para el rango de fechas pedido.</li>
+</ul>
+
+<h2>3. Benchmarking (Relevamiento de Mercado)</h2>
+<p>Previo a proponer un desarrollo a medida, se relevaron soluciones ya consolidadas en el mercado internacional de gestión de alquileres de equipamiento audiovisual y técnico, entre ellas <strong>Booqable</strong>, <strong>Rentman</strong> y <strong>Flex Rental Solutions</strong>. Se trata de plataformas robustas, maduras y escalables, ampliamente utilizadas por empresas del rubro a nivel internacional; sin embargo, el análisis de sus características frente al perfil operativo del posible cliente muestra que no resultan la opción adecuada para este caso puntual.</p>
+
+<table>
+  <tr><th>Solución</th><th>Fortalezas</th><th>Limitaciones frente al caso Rental Visual BA</th></tr>
+  <tr><td><strong>Booqable</strong></td><td>Plataforma SaaS especializada en alquiler, con motor de disponibilidad y tienda online integrada.</td><td>Modelo de suscripción mensual en dólares, parametrización orientada a catálogos grandes y flujos de e-commerce que exceden la operatoria actual del cliente.</td></tr>
+  <tr><td><strong>Rentman</strong></td><td>Muy robusto para planificación logística de transporte y proyectos audiovisuales de gran escala.</td><td>Complejidad de configuración y costo de licenciamiento pensados para productoras o proveedores de mayor volumen, no para un depósito con operatoria manual.</td></tr>
+  <tr><td><strong>Flex Rental Solutions</strong></td><td>Solución consolidada en la industria del rental técnico (sonido, luces, video) a nivel internacional.</td><td>Fuerte orientación al backoffice corporativo, curva de aprendizaje pronunciada y costo de licencia fuera del presupuesto de una pyme.</td></tr>
+</table>
+
+<p>En síntesis, estas herramientas son sistemas genéricos, diseñados para adaptarse a múltiples industrias y escalas de negocio, lo que se traduce en una parametrización compleja y en costos de licenciamiento mensual en dólares difíciles de justificar para una pyme familiar como la del cliente. Además, todas ellas concentran su valor en el backoffice corporativo, relegando a un segundo plano un catálogo público simple, liviano y amigable —que es, precisamente, lo que el cliente necesita para que sus productoras y clientes freelance puedan autogestionar sus pre-reservas sin fricción—, y ninguna contempla de forma nativa el doble control (stock + operatividad técnica) ni la proyección de disponibilidad considerando la revisión técnica al retorno.</p>
+
+<h2>4. Propuesta de Proyecto (Alcance Inicial — MVP)</h2>
+<p>En función del diagnóstico realizado, se define un Producto Mínimo Viable (MVP) enfocado exclusivamente en resolver lo indispensable para normalizar la operación del cliente y eliminar sus principales puntos de fallo operativo, postergando funcionalidades avanzadas para etapas posteriores del proyecto.</p>
+
+<h3>4.1 Módulos incluidos en el MVP</h3>
+<ul>
+  <li><strong>Módulo de Inventario:</strong> catálogo de equipos con datos normalizados, identificadores únicos, unidad de precio homogénea, <strong>escala de estados doble (stock + operatividad)</strong>, ubicación precisa dentro del depósito y días de revisión por equipo.</li>
+  <li><strong>Módulo de Calendario y Reservas:</strong> motor de disponibilidad por rango de fechas que impida de manera estructural la doble reserva, con <strong>proyección de disponibilidad probable</strong> (mora + ventana de revisión técnica).</li>
+  <li><strong>Módulo de Check-out y Check-in:</strong> flujo ágil de retiro y devolución, pensado para usarse desde el mostrador del galpón o vía mobile, con <strong>actualización automática de ambos ejes de estado</strong> y <strong>revisión técnica registrada por el técnico de recepción</strong>.</li>
+  <li><strong>Módulo de Mora, Prórrogas y Penalidades:</strong> marcado automático de mora, registro formal de prórrogas y cálculo automático de recargos por devolución tardía.</li>
+  <li><strong>Catálogo Web Público:</strong> vidriera online del equipamiento disponible, con <strong>pre-reserva autogestionada</strong> (requiere autorización del personal) y disponibilidad real proyectada.</li>
+</ul>
+
+<h3>4.2 Reglas de negocio clave</h3>
+<div class="regla"><strong>Penalidad por mora:</strong> se aplica un <strong>cargo fijo por día equivalente al 50% adicional del valor del alquiler diario</strong> del equipo por cada día de devolución tardía. <strong>Excepción:</strong> si el cliente <strong>avisó</strong> con antelación que necesitaba el equipo unos días más (prórroga registrada formalmente), <strong>no se aplica</strong> el recargo de mora; en su lugar se actualiza la fecha estimada de devolución.</div>
+<div class="regla"><strong>Garantías (pagaré, DNI, caución, seña):</strong> funcionan como respaldo de adeudos pendientes. <strong>Nunca se ejecutan automáticamente.</strong> Su liberación es un proceso manual realizado por el personal, previa verificación del saldo.</div>
+<div class="regla"><strong>Pre-reserva web:</strong> el portal permite generar pre-reservas (estado PRE-RESERVA), pero estas deben ser <strong>autorizadas/confirmadas por el personal</strong> del depósito antes de ejecutarse como alquiler (estado CONFIRMADA) y posteriormente pasar a EN CURSO al realizar el check-out.</div>
+
+<h3>4.3 Ciclo de vida de un alquiler/reserva</h3>
+<p class="centro"><span class="estado">PRE-RESERVA (web)</span> → <span class="estado">CONFIRMADA (autorización admin)</span> → <span class="estado">EN CURSO (check-out / retiro)</span> → <span class="estado">CERRADA (check-in / devolución con revisión técnica)</span></p>
+<p>Nota: en plazos intermedios puede darse el paso a <span class="estado">MORA</span> (si vence sin devolver) o <span class="estado">CON PRÓRROGA</span> (si el cliente avisó y el personal lo registró).</p>
+
+<h3>4.4 Factor diferencial de la propuesta</h3>
+<p>A diferencia de las soluciones relevadas en el benchmarking, la propuesta ofrece un desarrollo a medida, sin costos recurrentes de licencias, con una curva de aprendizaje mínima adaptada a la informalidad actual de la empresa y a las herramientas que su equipo ya conoce (planillas, WhatsApp, mostrador físico). El sistema integra en un único lugar la robustez de un sistema interno de control —inventario, reservas, check-in/check-out, cobros y garantías— con la visibilidad de un portal web público de pre-reservas, eliminando la brecha entre lo que el cliente promete por WhatsApp y lo que realmente hay disponible en el depósito. A su vez, incorpora un control de estados en dos ejes (stock + operatividad) y una proyección de disponibilidad probable con revisión técnica, que resuelven los dos problemas que el Excel actual ni siquiera se plantea: distinguir "en stock" de "en condiciones de alquilarse" y anticipar cuándo un equipo estará realmente disponible.</p>
+
+<h2>Nota sobre stack tecnológico y próximos pasos</h2>
+<p>Se propone la implementación con <strong>SQLite</strong> (base de datos), <strong>Node.js + Express</strong> (backend / REST API) y <strong>React</strong> (frontend responsive para celular y mostrador). Los próximos pasos del análisis comprenden: modelo de dominio, casos de uso, diseño del esquema de base de datos (DER y migración de los datos del Excel normalizados) y diseño de las pantallas.</p>
+
+</body>
+</html>

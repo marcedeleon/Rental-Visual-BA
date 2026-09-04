@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Entorno
+.env
+.env.local
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.tsbuildinfo
+
+# PDFs fuente (mantener en docs/ versionados)
