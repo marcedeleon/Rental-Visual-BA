@@ -59,7 +59,16 @@ rental-visual-ba/
 ├── README.md
 ├── CHANGELOG.md
 ├── .gitignore
-├── docs/ (00..06)
+├── docs/ (00..08)
+│   ├── 00-documento-analisis-unificado.{pdf,html}
+│   ├── 01-requerimientos.md
+│   ├── 02-modelo-de-dominio.md (pendiente)
+│   ├── 03-casos-de-uso.md (pendiente)
+│   ├── 04-der-esquema-db.sql (pendiente)
+│   ├── 05-diseno-tecnico.md (pendiente)
+│   ├── 06-ui-pantallas.md (pendiente)
+│   ├── 07-flujos-y-procesos.{md,html,pdf}  → entregable de flujo para el cliente
+│   └── 08-presupuesto.{md,html,pdf}        → presupuesto de tiempo y costos (ARS)
 └── (backend/, frontend/ en fase de desarrollo)
 ```
 
@@ -76,3 +85,6 @@ rental-visual-ba/
 - Mantener la documentación en `docs/` actualizada a la par del código.
 - No comitear secretos ni datos reales sensibles del cliente.
 - Ejecutar pruebas antes de dar por terminada una funcionalidad.
+- Los entregables al cliente (`07-flujos-y-procesos`, `08-presupuesto`) se entregan en **3 formatos**: `.md` (fuente editable), `.html` (editable/visualizable) y `.pdf` (versión final para enviar). Al modificar la fuente, regenerar el `.pdf`.
+- El presupuesto (`08-presupuesto.md`) tiene parámetros por definir: **tarifa hora real (ARS)** y **reparto de roles por integrante**. Al fijarlos, actualizar tablas de costos, sensibilidad e hitos.
+- Diagramas Mermaid: mantenerlos válidos (validar con `mermaid.parse` o el editor de Mermaid antes de commitear, o los bloques no renderizan).
