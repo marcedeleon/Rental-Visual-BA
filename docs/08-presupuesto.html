@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Rental Visual BA - Presupuesto</title>
+<style>
+  body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px 60px; line-height: 1.5; color: #1a1a1a; }
+  h1 { font-size: 22px; color: #0b3d66; border-bottom: 2px solid #0b3d66; padding-bottom: 4px; }
+  h2 { font-size: 18px; color: #0b3d66; margin-top: 30px; border-left: 5px solid #0b3d66; padding-left: 8px; }
+  h3 { font-size: 15px; color: #11517f; margin-top: 18px; }
+  .encabezado { text-align: center; margin-bottom: 8px; }
+  .encabezado .unl { font-size: 16px; font-weight: bold; }
+  .encabezado .lic { font-size: 13px; }
+  .encabezado .tpi { font-size: 13px; }
+  .titulo-caso { font-size: 20px; font-weight: bold; color: #0b3d66; text-align: center; margin-top: 18px; }
+  p { text-align: justify; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; margin: 12px 0; }
+  th { background: #0b3d66; color: #fff; text-align: left; padding: 6px 8px; }
+  td { border: 1px solid #bbb; padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f2f6fa; }
+  tfoot td { font-weight: bold; background: #dce8f2 !important; }
+  .num { text-align: right; white-space: nowrap; }
+  .total { background: #0b3d66; color: #fff; font-size: 15px; font-weight: bold; padding: 10px 12px; text-align: right; margin: 12px 0; border-radius: 4px; }
+  .nota { background: #fff8e1; border-left: 4px solid #f9a825; padding: 8px 12px; margin: 10px 0; }
+  .regla { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 8px 12px; margin: 10px 0; }
+  .aviso { background: #e3f2fd; border-left: 4px solid #1565c0; padding: 8px 12px; margin: 10px 0; font-size: 12px; }
+  .mermaid { text-align: center; margin: 14px 0; }
+  .destacado { background: #0b3d66; color: #fff; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
+  @media print {
+    body { margin: 12mm 14mm; }
+    h2 { page-break-after: avoid; }
+    .mermaid { page-break-inside: avoid; }
+    table { page-break-inside: avoid; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="encabezado">
+  <div class="unl">Universidad Nacional de Lanús</div>
+  <div class="lic">Licenciatura en Sistemas — Prácticas Pre Profesionales 2026</div>
+  <div class="tpi">Trabajo Práctico Integrador Cuatrimestral</div>
+  <br>
+  <div>Prof. Tit.: Lic. Gustavo Siciliano</div>
+  <div>Inst. Ayud.: Lic. Marcelo Wolf</div>
+  <div>Inst. Ayud.: Santiago Cofman</div>
+  <br>
+  <div><strong>Integrantes:</strong> De León, Marcelo · Ibañez, Sofia · Maldonado, Juan · Rodriguez, Ramiro</div>
+</div>
+
+<div class="titulo-caso">Caso "Rental Visual BA" — Presupuesto</div>
+
+<p>El presente documento estima el <strong>esfuerzo (tiempo)</strong> y el <strong>costo</strong> del desarrollo del MVP descripto en <em>01-requerimientos.md</em>, para un equipo de <strong>4 (cuatro) integrantes</strong>, más los <strong>costos operativos de infraestructura</strong> del primer año.</p>
+
+<div class="nota"><strong>Moneda:</strong> pesos argentinos (ARS). <strong>Tarifa de referencia:</strong> ARS 15.000 / hora-hombre (ver justificación en la sección 3). Los valores son parametrizables: ante otra tarifa acordada, se recalcula con la tabla de sensibilidad de la sección 7.</div>
+
+<div class="aviso no-print">Para exportar a PDF: abrir este archivo en el navegador, esperar a que renderice el cronograma y usar <strong>Imprimir → Guardar como PDF</strong>.</div>
+
+<h2>1. Resumen ejecutivo</h2>
+<table>
+  <tr><th>Concepto</th><th>Valor</th></tr>
+  <tr><td>Duración del proyecto</td><td><strong>16 semanas</strong> (~4 meses)</td></tr>
+  <tr><td>Equipo</td><td><strong>4 integrantes</strong></td></tr>
+  <tr><td>Dedicación</td><td>15 h/semana por integrante (60 h/semana de equipo)</td></tr>
+  <tr><td>Esfuerzo total</td><td><strong>960 horas-hombre (HH)</strong></td></tr>
+  <tr><td>Tarifa de referencia</td><td>ARS 15.000 / HH</td></tr>
+  <tr><td>Costo de desarrollo</td><td class="num"><strong>ARS 14.400.000</strong></td></tr>
+  <tr><td>Infraestructura año 1</td><td class="num"><strong>ARS 500.000</strong></td></tr>
+</table>
+<div class="total">TOTAL primer año: ARS 14.900.000</div>
+
+<h2>2. Equipo y dedicación</h2>
+<table>
+  <tr><th>Rol</th><th>Perfil</th><th>Personas</th><th>Dedicación</th></tr>
+  <tr><td>Analista funcional / líder técnico</td><td>Semi-senior</td><td>1</td><td>15 h/sem</td></tr>
+  <tr><td>Desarrollador backend (Node/Express + SQLite)</td><td>Junior/Semi</td><td>1</td><td>15 h/sem</td></tr>
+  <tr><td>Desarrollador frontend / UX-UI (React)</td><td>Junior/Semi</td><td>1</td><td>15 h/sem</td></tr>
+  <tr><td>QA / testing y documentación</td><td>Junior</td><td>1</td><td>15 h/sem</td></tr>
+  <tr><td colspan="2"><strong>Total</strong></td><td><strong>4</strong></td><td><strong>60 h/sem</strong></td></tr>
+</table>
+<p class="nota">Los roles se proponen como referencia; el equipo de 4 puede rotarlos según disponibilidad. La estimación no cambia porque el cálculo se hace sobre horas-hombre totales.</p>
+
+<h2>3. Tarifa de referencia (valor hora)</h2>
+<p>Se toma como base la mediana salarial bruta del sector tecnológico en Argentina (Encuesta de Sueldos 2026.1, Sysarmy) y se aplica un margen freelance para cubrir tiempo no facturable, impuestos y overhead (~30–40%).</p>
+<table>
+  <tr><th>Rol</th><th class="num">Tarifa/hora (ARS)</th><th class="num">Peso en el proyecto</th></tr>
+  <tr><td>Analista funcional / líder técnico</td><td class="num">18.000</td><td class="num">25 %</td></tr>
+  <tr><td>Desarrollador full-stack</td><td class="num">14.000</td><td class="num">45 %</td></tr>
+  <tr><td>Diseño UX/UI</td><td class="num">13.000</td><td class="num">15 %</td></tr>
+  <tr><td>QA / testing</td><td class="num">11.000</td><td class="num">15 %</td></tr>
+  <tr><td><strong>Promedio ponderado</strong></td><td class="num"><strong>≈ 14.400</strong></td><td class="num">100 %</td></tr>
+</table>
+<p>Se adopta <span class="destacado">ARS 15.000 / HH</span> como tarifa de referencia redondeada para todo el proyecto.</p>
+
+<h2>4. Estimación de tiempo (EDT / WBS)</h2>
+<table>
+  <tr><th>#</th><th>Fase</th><th>Semanas</th><th>Dedicación</th><th class="num">Horas-hombre</th><th class="num">Costo (ARS)</th></tr>
+  <tr><td>1</td><td>Relevamiento y análisis funcional</td><td>1–2</td><td>4 × 15 h</td><td class="num">120</td><td class="num">1.800.000</td></tr>
+  <tr><td>2</td><td>Diseño (modelo de dominio, DER, arquitectura, UX/UI)</td><td>3–4</td><td>4 × 15 h</td><td class="num">120</td><td class="num">1.800.000</td></tr>
+  <tr><td>3</td><td>Desarrollo (backend + frontend en paralelo)</td><td>5–10</td><td>4 × 15 h</td><td class="num">360</td><td class="num">5.400.000</td></tr>
+  <tr><td>4</td><td>Pruebas, QA e integración</td><td>11–12</td><td>4 × 15 h</td><td class="num">120</td><td class="num">1.800.000</td></tr>
+  <tr><td>5</td><td>Despliegue, migración de datos y capacitación</td><td>13</td><td>4 × 15 h</td><td class="num">60</td><td class="num">900.000</td></tr>
+  <tr><td>6</td><td>Estabilización y ajustes post-feedback (buffer)</td><td>14–16</td><td>4 × 15 h</td><td class="num">180</td><td class="num">2.700.000</td></tr>
+  <tr><td colspan="4"><strong>Total</strong></td><td class="num"><strong>960</strong></td><td class="num"><strong>14.400.000</strong></td></tr>
+</table>
+<p>La documentación y la gestión del proyecto están distribuidas dentro de cada fase (no se facturan como línea aparte).</p>
+
+<h3>Cronograma</h3>
+<pre class="mermaid">
+gantt
+    title Cronograma Rental Visual BA (16 semanas)
+    dateFormat YYYY-MM-DD
+    axisFormat %d/%m
+    section Análisis
+    Relevamiento y análisis funcional :a1, 2026-09-01, 14d
+    section Diseño
+    Diseño (dominio, DER, UX/UI) :a2, after a1, 14d
+    section Desarrollo
+    Backend (API REST + SQLite) :a3, after a2, 42d
+    Frontend (React responsive) :a4, after a2, 42d
+    section Pruebas
+    Pruebas, QA e integración :a5, after a3, 14d
+    section Entrega
+    Despliegue, migración y capacitación :a6, after a5, 7d
+    Estabilización y ajustes :a7, after a6, 21d
+</pre>
+
+<h2>5. Costos de infraestructura (año 1)</h2>
+<table>
+  <tr><th>Concepto</th><th>Detalle</th><th class="num">Costo anual (ARS)</th></tr>
+  <tr><td>Dominio <code>.com.ar</code></td><td>Registro/renovación NIC.ar</td><td class="num">20.000</td></tr>
+  <tr><td>Hosting VPS</td><td>2 vCPU / 2 GB (Node + SQLite), ARS 30.000/mes</td><td class="num">360.000</td></tr>
+  <tr><td>Certificado SSL/TLS</td><td>Let's Encrypt</td><td class="num">0</td></tr>
+  <tr><td>Backup automático en nube</td><td>ARS 10.000/mes</td><td class="num">120.000</td></tr>
+  <tr><td colspan="2"><strong>Subtotal</strong></td><td class="num"><strong>500.000</strong></td></tr>
+</table>
+<p class="nota">El stack elegido (SQLite + Node/Express + React) permite correr todo en un único servidor pequeño, sin costos de licencias de base de datos ni de plataformas SaaS.</p>
+
+<h2>6. Forma de pago propuesta (hitos)</h2>
+<table>
+  <tr><th>Hito</th><th class="num">%</th><th class="num">Monto (ARS)</th></tr>
+  <tr><td>Firma / inicio del proyecto</td><td class="num">30 %</td><td class="num">4.470.000</td></tr>
+  <tr><td>Entrega del MVP funcional (fin del desarrollo)</td><td class="num">30 %</td><td class="num">4.470.000</td></tr>
+  <tr><td>Entrega final + capacitación</td><td class="num">30 %</td><td class="num">4.470.000</td></tr>
+  <tr><td>Retención de garantía (a 30 días de la puesta en marcha)</td><td class="num">10 %</td><td class="num">1.490.000</td></tr>
+  <tr><td><strong>Total</strong></td><td class="num"><strong>100 %</strong></td><td class="num"><strong>14.900.000</strong></td></tr>
+</table>
+
+<h2>7. Análisis de sensibilidad</h2>
+<p>Variación del total según la tarifa hora-hombre adoptada (manteniendo las 960 HH y la infraestructura):</p>
+<table>
+  <tr><th class="num">Tarifa (ARS/HH)</th><th class="num">Costo desarrollo (ARS)</th><th class="num">+ Infra (ARS)</th><th class="num">Total año 1 (ARS)</th></tr>
+  <tr><td class="num">12.000</td><td class="num">11.520.000</td><td class="num">500.000</td><td class="num"><strong>12.020.000</strong></td></tr>
+  <tr><td class="num"><strong>15.000 (referencia)</strong></td><td class="num"><strong>14.400.000</strong></td><td class="num"><strong>500.000</strong></td><td class="num"><strong>14.900.000</strong></td></tr>
+  <tr><td class="num">18.000</td><td class="num">17.280.000</td><td class="num">500.000</td><td class="num"><strong>17.780.000</strong></td></tr>
+</table>
+
+<h2>8. Alcance, supuestos y exclusiones</h2>
+<div class="regla">
+<strong>Incluido en el presupuesto</strong>
+<ul>
+  <li>Los 5 módulos del MVP: Inventario, Calendario/Disponibilidad, Check-out/Check-in, Mora/Prórrogas/Penalidades y Catálogo Web con pre-reservas.</li>
+  <li>Migración y normalización de los datos del Excel actual (<code>Caso_4_Audiovisual_Rental_Datos_Equipos.xlsx</code>).</li>
+  <li>Capacitación al personal del depósito y documentación de uso.</li>
+  <li>Infraestructura del primer año (hosting, dominio, backup, SSL).</li>
+</ul>
+</div>
+<div class="nota">
+<strong>Supuestos</strong>
+<ul>
+  <li>Dedicación promedio de 15 h/semana por integrante durante 16 semanas.</li>
+  <li>El cliente provee los datos reales y valida cada entrega en un plazo máximo de 5 días hábiles.</li>
+  <li>Un único idioma (español) y una única moneda visible en el sistema.</li>
+</ul>
+</div>
+<div class="nota" style="background:#fdecea;border-left-color:#c62828;">
+<strong>Excluido (cotizable por separado)</strong>
+<ul>
+  <li>Mantenimiento y soporte posterior a los 30 días de la puesta en marcha.</li>
+  <li>Integración con pasarelas de pago online, facturación electrónica o AFIP.</li>
+  <li>Apps móviles nativas (la entrega es web responsive).</li>
+  <li>Funcionalidades fuera del MVP (ej. reportes avanzados, multi-sucursal).</li>
+</ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose', gantt: { useMaxWidth: true } });
+</script>
+
+</body>
+</html>

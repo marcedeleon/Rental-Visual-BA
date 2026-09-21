@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Rental Visual BA - Flujos y Procesos</title>
+<style>
+  body { font-family: "Segoe UI", Arial, sans-serif; margin: 40px 60px; line-height: 1.5; color: #1a1a1a; }
+  h1 { font-size: 22px; color: #0b3d66; border-bottom: 2px solid #0b3d66; padding-bottom: 4px; }
+  h2 { font-size: 18px; color: #0b3d66; margin-top: 30px; border-left: 5px solid #0b3d66; padding-left: 8px; }
+  h3 { font-size: 15px; color: #11517f; margin-top: 18px; }
+  .encabezado { text-align: center; margin-bottom: 8px; }
+  .encabezado .unl { font-size: 16px; font-weight: bold; }
+  .encabezado .lic { font-size: 13px; }
+  .encabezado .tpi { font-size: 13px; }
+  .titulo-caso { font-size: 20px; font-weight: bold; color: #0b3d66; text-align: center; margin-top: 18px; }
+  p { text-align: justify; }
+  table { border-collapse: collapse; width: 100%; font-size: 12px; margin: 12px 0; }
+  th { background: #0b3d66; color: #fff; text-align: left; padding: 6px 8px; }
+  td { border: 1px solid #bbb; padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f2f6fa; }
+  .estado { font-family: Consolas, monospace; background: #eef; padding: 1px 4px; border-radius: 3px; }
+  .nota { background: #fff8e1; border-left: 4px solid #f9a825; padding: 8px 12px; margin: 10px 0; }
+  .regla { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 8px 12px; margin: 10px 0; }
+  .ref { font-size: 11px; color: #555; font-style: italic; margin: 4px 0 0 0; }
+  .mermaid { text-align: center; margin: 14px 0; }
+  .aviso { background: #e3f2fd; border-left: 4px solid #1565c0; padding: 8px 12px; margin: 10px 0; font-size: 12px; }
+  @media print {
+    body { margin: 12mm 14mm; }
+    h2 { page-break-after: avoid; }
+    .mermaid { page-break-inside: avoid; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="encabezado">
+  <div class="unl">Universidad Nacional de Lanús</div>
+  <div class="lic">Licenciatura en Sistemas — Prácticas Pre Profesionales 2026</div>
+  <div class="tpi">Trabajo Práctico Integrador Cuatrimestral</div>
+  <br>
+  <div>Prof. Tit.: Lic. Gustavo Siciliano</div>
+  <div>Inst. Ayud.: Lic. Marcelo Wolf</div>
+  <div>Inst. Ayud.: Santiago Cofman</div>
+  <br>
+  <div><strong>Integrantes:</strong> De León, Marcelo · Ibañez, Sofia · Maldonado, Juan · Rodriguez, Ramiro</div>
+</div>
+
+<div class="titulo-caso">Caso "Rental Visual BA" — Flujos y Procesos</div>
+
+<p>El presente documento es el <strong>entregable de flujo</strong> solicitado por el cliente: representa gráficamente cómo opera el sistema de punta a punta, desde la pre-reserva web hasta la devolución del equipo, incluyendo el motor de disponibilidad, el control de estados en dos ejes, la mora y las prórrogas. Cada flujo referencia los requisitos funcionales (RF) y las reglas de negocio (RN) definidos en <em>01-requerimientos.md</em>.</p>
+
+<div class="aviso no-print">Para exportar a PDF: abrir este archivo en el navegador (requiere conexión para cargar los diagramas), esperar a que rendericen y usar <strong>Imprimir → Guardar como PDF</strong>.</div>
+
+<h2>Índice de flujos</h2>
+<table>
+  <tr><th>#</th><th>Flujo</th><th>Qué responde</th></tr>
+  <tr><td>1</td><td>Contexto y actores</td><td>¿Quién usa el sistema y para qué?</td></tr>
+  <tr><td>2</td><td>Ciclo de vida de una reserva/alquiler</td><td>¿Qué estados atraviesa un alquiler?</td></tr>
+  <tr><td>3</td><td>Pre-reserva web y autorización</td><td>¿Cómo pide un cliente y cómo autoriza el personal?</td></tr>
+  <tr><td>4</td><td>Motor de disponibilidad</td><td>¿Cómo se evita la doble reserva?</td></tr>
+  <tr><td>5</td><td>Check-out (retiro)</td><td>¿Cómo sale el equipo del depósito?</td></tr>
+  <tr><td>6</td><td>Check-in (devolución + revisión técnica)</td><td>¿Cómo vuelve y cómo se controla su estado?</td></tr>
+  <tr><td>7</td><td>Mora y prórroga</td><td>¿Qué pasa si no devuelve a tiempo?</td></tr>
+  <tr><td>8</td><td>Estados doble eje</td><td>¿En qué estado puede alquilarse un equipo?</td></tr>
+</table>
+
+<h2>1. Contexto y actores</h2>
+<p>El sistema es una única plataforma con dos entornos (Portal Cliente y Backoffice) sobre una misma base de datos normalizada. Tres actores interactúan con él.</p>
+<pre class="mermaid">
+flowchart LR
+    C["Cliente / Productora / Agencia"] -->|"Portal web: pre-reserva y presupuesto"| S["Sistema Rental Visual BA"]
+    M["Personal de mostrador"] -->|"Backoffice: reservas, cobros, garantías"| S
+    T["Técnico de recepción"] -->|"Check-in y revisión técnica"| S
+    S --> DB[("Base de datos SQLite")]
+    S -->|"Alertas: vuelve hoy / en mora / debe plata"| M
+</pre>
+<p class="ref">Referencias: RF-20 a RF-25, RNF-04.</p>
+
+<h2>2. Ciclo de vida de una reserva / alquiler</h2>
+<p>Estados oficiales: <span class="estado">PRE-RESERVA</span> → <span class="estado">CONFIRMADA</span> → <span class="estado">EN CURSO</span> → <span class="estado">CERRADA</span>, con ramas a <span class="estado">MORA</span> y <span class="estado">CON PRÓRROGA</span>.</p>
+<pre class="mermaid">
+stateDiagram-v2
+    [*] --> PRE_RESERVA: Cliente crea pre-reserva web
+    PRE_RESERVA --> CONFIRMADA: Personal autoriza
+    PRE_RESERVA --> RECHAZADA: Personal deniega
+    RECHAZADA --> [*]
+    CONFIRMADA --> EN_CURSO: Check-out / retiro
+    EN_CURSO --> CON_PRORROGA: Cliente avisa y se registra prórroga
+    EN_CURSO --> MORA: Vence sin devolver
+    CON_PRORROGA --> CERRADA: Check-in
+    CON_PRORROGA --> MORA: Vence la prórroga
+    MORA --> CERRADA: Check-in con penalidad
+    EN_CURSO --> CERRADA: Check-in en término
+    CERRADA --> [*]
+</pre>
+<p class="ref">Referencias: RF-08, RN-2, RN-4, RN-6.</p>
+
+<h2>3. Pre-reserva web y autorización del personal</h2>
+<p>El portal <strong>nunca</strong> confirma un alquiler por sí solo: genera una pre-reserva que el personal debe autorizar o denegar.</p>
+<pre class="mermaid">
+flowchart TD
+    A["Cliente navega el catálogo público"] --> B["Consulta disponibilidad por rango de fechas"]
+    B --> C{"¿Hay disponibilidad proyectada?"}
+    C -- No --> B
+    C -- Sí --> D["Cliente arma presupuesto y genera PRE-RESERVA"]
+    D --> E["Sistema notifica al personal del depósito"]
+    E --> F{"El personal revisa"}
+    F -- Deniega --> G["Notifica el rechazo al cliente"]
+    F -- Autoriza --> H["Alquiler pasa a CONFIRMADA"]
+    H --> I["Cliente recibe la confirmación"]
+</pre>
+<p class="ref">Referencias: RF-09, RF-10, RF-13, RF-23, RN-6.</p>
+
+<h2>4. Motor de disponibilidad (evitar la doble reserva)</h2>
+<p>Es el corazón del sistema. Combina los dos ejes de estado con la proyección de disponibilidad probable (fin de alquiler / prórroga / mora + ventana de revisión técnica).</p>
+<pre class="mermaid">
+flowchart TD
+    A["Consulta de disponibilidad para un rango"] --> B{"¿Stock = EN_STOCK?"}
+    B -- No --> N["No disponible"]
+    B -- Sí --> C{"¿Operatividad = OPERATIVO u OPERATIVO_CON_OBSERVACIONES?"}
+    C -- No --> N
+    C -- Sí --> D{"¿Solapa con un alquiler o reserva vigente?"}
+    D -- No --> Y["Disponible en el rango pedido"]
+    D -- Sí --> E["Proyectar fecha probable = fin alquiler / prórroga / mora + días de revisión"]
+    E --> F{"¿Queda libre y operativo dentro del rango pedido?"}
+    F -- Sí --> Y2["Disponible a partir de la fecha proyectada"]
+    F -- No --> N
+</pre>
+<p class="ref">Referencias: RF-05, RF-06, RF-07, RN-1, RN-7.</p>
+
+<h2>5. Check-out (retiro del equipo)</h2>
+<pre class="mermaid">
+flowchart TD
+    A["Reserva en estado CONFIRMADA"] --> B["El cliente se presenta en el mostrador"]
+    B --> C{"¿El equipo está EN_STOCK y OPERATIVO?"}
+    C -- No --> X["Se bloquea la entrega / se ofrece alternativa"]
+    C -- Sí --> D["Registrar seña y garantía: pagaré, DNI, caución, efectivo"]
+    D --> E["Firmar el contrato de alquiler"]
+    E --> F["Entregar el equipo: check-out"]
+    F --> G["Alquiler EN CURSO / equipo ALQUILADO"]
+</pre>
+<p class="ref">Referencias: RF-03, RF-11, RF-17, RN-1.</p>
+
+<h2>6. Check-in (devolución con revisión técnica)</h2>
+<p>El técnico de recepción actualiza <strong>ambos</strong> ejes de estado en cada devolución. La garantía se libera siempre de forma <strong>manual</strong>.</p>
+<pre class="mermaid">
+flowchart TD
+    A["El cliente devuelve el equipo"] --> B["El técnico recepciona y revisa"]
+    B --> C["Actualiza eje operatividad: OPERATIVO / CON_OBSERVACIONES / EN_REPARACION"]
+    C --> D["Actualiza eje stock: EN_STOCK o EN_SERVICIO_TECNICO"]
+    D --> E{"¿Hay mora o daños?"}
+    E -- "Devolución tardía" --> F["Calcular penalidad: +50% del valor diario por día"]
+    E -- "Prórroga avisada" --> G["Sin recargo de mora"]
+    E -- "Sin novedad" --> H["Sin cargo"]
+    F --> I["Cerrar el alquiler: CERRADA"]
+    G --> I
+    H --> I
+    I --> J["Liberar la garantía: proceso manual"]
+</pre>
+<p class="ref">Referencias: RF-04, RF-12, RF-16, RF-18, RN-3, RN-5.</p>
+
+<h2>7. Mora y prórroga</h2>
+<p>Regla de oro: si el cliente <strong>avisó</strong> con antelación, se registra prórroga formal y <strong>no</strong> se cobra recargo. Si no avisó, la mora se marca sola y se aplica la penalidad.</p>
+<pre class="mermaid">
+flowchart TD
+    A["Fecha estimada de devolución"] --> B{"¿Pasó la fecha y el equipo sigue ALQUILADO?"}
+    B -- No --> Z["Alquiler en curso normal"]
+    B -- Sí --> C{"¿El cliente avisó con antelación?"}
+    C -- Sí --> D["Registrar PRÓRROGA formal con nueva fecha"]
+    D --> E["Sin recargo de mora"]
+    C -- No --> F["Marcar MORA automáticamente"]
+    F --> G["Penalidad: +50% del valor de alquiler diario por día"]
+    G --> H["Impactar en la cuenta corriente del cliente"]
+</pre>
+<p class="ref">Referencias: RF-14, RF-15, RF-16, RF-19, RN-2, RN-3, RN-4.</p>
+
+<h2>8. Estados doble eje</h2>
+
+<h3>Eje 1 — Stock / ubicación</h3>
+<pre class="mermaid">
+stateDiagram-v2
+    [*] --> EN_STOCK
+    EN_STOCK --> ALQUILADO: check-out
+    ALQUILADO --> EN_STOCK: check-in sin falla
+    ALQUILADO --> EN_SERVICIO_TECNICO: check-in con falla
+    EN_STOCK --> EN_SERVICIO_TECNICO: enviar a revisión
+    EN_SERVICIO_TECNICO --> EN_STOCK: reparado
+    EN_STOCK --> BAJA: baja lógica
+    EN_STOCK --> PERDIDO: extravío
+    BAJA --> [*]
+    PERDIDO --> [*]
+</pre>
+
+<h3>Eje 2 — Operatividad técnica</h3>
+<pre class="mermaid">
+stateDiagram-v2
+    [*] --> SIN_REVISAR
+    SIN_REVISAR --> OPERATIVO: revisión OK
+    SIN_REVISAR --> OPERATIVO_CON_OBSERVACIONES: revisión con detalle
+    SIN_REVISAR --> EN_REPARACION: falla detectada
+    OPERATIVO --> OPERATIVO_CON_OBSERVACIONES: aparece un detalle
+    OPERATIVO_CON_OBSERVACIONES --> OPERATIVO: detalle resuelto
+    OPERATIVO_CON_OBSERVACIONES --> EN_REPARACION: el detalle empeora
+    EN_REPARACION --> OPERATIVO: reparado
+    EN_REPARACION --> OPERATIVO_CON_OBSERVACIONES: reparado con detalle
+</pre>
+
+<div class="regla"><strong>Regla clave:</strong> un equipo solo se alquila si está <span class="estado">EN_STOCK</span> <strong>y</strong> <span class="estado">OPERATIVO</span> (o <span class="estado">OPERATIVO_CON_OBSERVACIONES</span> informadas y aceptadas por el cliente). Estar en stock no es lo mismo que funcionar.</div>
+<p class="ref">Referencias: RF-02, RF-03, RN-1.</p>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', flowchart: { curve: 'basis' }, securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

@@ -25,11 +25,17 @@ rental-visual-ba/
 │   ├── 03-casos-de-uso.md
 │   ├── 04-der-esquema-db.sql
 │   ├── 05-diseno-tecnico.md
-│   └── 06-ui-pantallas.md
+│   ├── 06-ui-pantallas.md
+│   ├── 07-flujos-y-procesos.{md,html,pdf}
+│   └── 08-presupuesto.{md,html,pdf}
 └── (backend/, frontend/ en fase de desarrollo)
 ```
 
+## Entregables para el cliente
+- **Flujos y procesos** (`docs/07-flujos-y-procesos.md` / `.html`): diagramas del ciclo del alquiler, disponibilidad, check-out/check-in, mora/prórroga y estados doble eje. El `.html` es exportable a PDF.
+- **Presupuesto** (`docs/08-presupuesto.md` / `.html`): estimación de tiempo (960 HH, 16 semanas, 4 personas) y costos en ARS, con infraestructura e hitos de pago. Exportable a PDF.
+
 ## Estado del proyecto
-Fase actual: **Análisis y diseño** (documentación). Próximos entregables: requerimientos, modelo de dominio, casos de uso, DER y diseño de pantallas.
+Fase actual: **Análisis y diseño** (documentación). Próximos entregables: modelo de dominio, casos de uso, DER y diseño de pantallas.
 
 Ver [CHANGELOG.md](CHANGELOG.md) para el registro de actualizaciones y [AGENTS.md](AGENTS.md) para las convenciones del proyecto.
